@@ -15,7 +15,7 @@ final class DataTransform implements DataTransformInterface
         private JSONFileHandler $jsonFileHandler
     ){}
 
-    private function filter(): ?array
+    private function filter(): array
     {
         $result = [];
         foreach($this->csvFileHandler->read() as $key => $line) {
@@ -29,10 +29,7 @@ final class DataTransform implements DataTransformInterface
         return $result;
     }
 
-    private function getTree(): array
-    {
-        return $this->buildTree($this->filter());
-    }
+
 
     private function buildTree(array &$array, string $parentId = ""): array
     {
@@ -53,6 +50,7 @@ final class DataTransform implements DataTransformInterface
 
     public function write(): void
     {
-        $this->jsonFileHandler->write($this->getTree());
+        $filteredValues = $this->filter();
+        $this->jsonFileHandler->write($this->buildTree($filteredValues));
     }
 }
