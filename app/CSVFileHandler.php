@@ -23,16 +23,20 @@ class CSVFileHandler extends FileHandler
         }
     }
 
-    public function read(): ?iterable
+
+
+    public function read(): iterable
     {
-        try {
-            if ($file = fopen($this->path, "r")) {
-                while (($line = fgetcsv($file, 0, $this->delimiter))) {
-                    yield $line;
-                }
-            }
-        } finally {
-            fclose($file);
+        $spl = new \SplFileObject($this->path, 'r' );
+
+        $spl->setFlags( $spl :: READ_CSV);
+
+        $spl->setCsvControl($this->delimiter);
+
+        $spl->setMaxLineLen(0);
+
+        foreach ($spl AS $array ) {
+            yield $array;
         }
     }
 }
